@@ -1,0 +1,197 @@
+navigator navbar {
+  hidereport 0
+}
+
+macro TaskTip [
+  tooltip istask() -8<-
+    '''Start: ''' <-query attribute='start'->
+    '''End: ''' <-query attribute='end'->
+    ----
+    '''Resources:'''
+
+    <-query attribute='resources'->
+    ----
+    '''Precursors: '''
+
+    <-query attribute='precursors'->
+    ----
+    '''Followers: '''
+
+    <-query attribute='followers'->
+    ->8-
+]
+
+textreport frame "" {
+  header -8<-
+    == Accounting Software Project ==
+    <[navigator id="navbar"]>
+  ->8-
+  footer "----"
+  textreport index "ReportOverview" {
+    formats html
+    center '<[report id="ReportOverview"]>'
+  }
+
+  textreport "ReportStatus" {
+    formats html
+    center -8<-
+      <[report id="ReportStatus.buffer"]>
+      ----
+      <[report id="ReportStatus.dashboard"]>
+      ----
+      <[report id="ReportStatus.completed"]>
+      ----
+      <[report id="ReportStatus.ongoing"]>
+      ----
+      <[report id="ReportStatus.future"]>
+    ->8-
+  }
+
+  textreport "ReportDeliveries" {
+    formats html
+    center '<[report id="ReportDeliveries"]>'
+  }
+
+  textreport "ReportResourceGraph" {
+    formats html
+    title "Resource Graph"
+    center '<[report id="ReportResourceGraph"]>'
+  }
+}
+
+
+# A traditional Gantt chart with a project ReportOverview.
+taskreport ReportOverview "" {
+  header -8<-
+    === Project Plan ===
+  ->8-
+  columns name, effort, resources, chart { ${TaskTip} scale week width 1000} 
+  timeformat "%a %Y-%m-%d"
+  loadunit days
+  hideresource 1
+  
+  caption 'All effort values are in man days.'
+
+  footer -8<-
+    === Staffing ===
+
+    All project phases are properly staffed. See [[ReportResourceGraph]] for
+    detailed resource allocations.
+
+    === Current Status ===
+
+    The project started off with a delay of 4 days. This slightly affected
+    the original schedule. See [[ReportDeliveries]] for the impact on the
+    delivery dates.
+  ->8-
+}
+
+# Macro to set the background color of a cell according to the alert
+# level of the task.
+macro AlertColor [
+  cellcolor plan.alert = 0 "#00D000" # green
+  cellcolor plan.alert = 1 "#D0D000" # yellow
+  cellcolor plan.alert = 2 "#D00000" # red
+]
+
+taskreport ReportStatus "" {
+  columns bsi { width 50 title 'WBS' }, name { width 150 },
+          start { width 100 }, end { width 100 },
+          effort { width 100 },
+          CompRate,
+          ExhaustRate,
+          alert { tooltip plan.journal
+                          != '' "<-query attribute='journal'->" width 150 },
+          status { width 150 }
+  scenarios execution
+
+  taskreport buffer "" {
+    headline "Buffer Status"
+    columns name, 
+            scenario, 
+            effort,
+            CompRate, 
+            ExhaustRate,
+            alert { tooltip plan.journal
+                          != '' "<-query attribute='journal'->"}
+    hidetask (~buffer | chaindetail)
+    sorttasks name.up
+    scenarios plan, execution    
+  }
+  
+  taskreport dashboard "" {
+    headline "Project Dashboard (<-query attribute='now'->)"
+    columns name { title "Task" ${AlertColor} width 200},
+            resources { width 200 ${AlertColor}
+                        listtype bullets
+                        listitem "<-query attribute='name'->"
+                        start ${projectstart} end ${projectend} },
+            alerttrend { title "Trend" ${AlertColor} width 50 },
+            journal { width 350 ${AlertColor} }
+    journalmode status_up
+    journalattributes headline, author, date, summary, details
+    hidetask ~hasalert(0)
+    sorttasks alert.down, execution.end.up
+    period %{${now} - 1w} +1w
+  }
+  taskreport completed "" {
+    headline "Already completed tasks"
+    hidetask ~(execution.end <= ${now})
+  }
+  taskreport ongoing "" {
+    headline "Ongoing tasks"
+    hidetask ~((execution.start <= ${now}) & (execution.end > ${now}))
+  }
+  taskreport future "" {
+    headline "Future tasks"
+    hidetask ~(execution.start > ${now})
+  }
+}
+
+
+
+# A graph showing resource allocation. It identifies whether each
+# resource is under- or over-allocated for.
+resourcereport ReportResourceGraph "" {
+  scenarios execution
+  headline "Resource Allocation Graph"
+  columns no, name, effort, weekly { ${TaskTip} scale week width 1000}
+  loadunit days
+  # We only like to show leaf tasks for leaf resources.
+  hidetask ~(isleaf() & isleaf_())
+  sorttasks plan.start.up
+}
+
+# A list of tasks showing the resources assigned to each task.
+#taskreport ReportDevelopment "" {
+#  scenarios execution
+#  headline "ReportDevelopment - Resource Allocation Report"
+#  columns bsi { title 'WBS' }, name, start, end, effort { title "Work" },
+#          duration, chart { ${TaskTip} scale day width 500 }
+#  timeformat "%Y-%m-%d"
+#  hideresource ~(isleaf() & isleaf_())
+#  sortresources name.up
+#}
+
+# A list of all tasks with the percentage completed for each task
+taskreport ReportDeliveries "" {
+  headline "Project Deliverables"
+  columns name, effort, complete, chart { ${TaskTip} }
+ # columns bsi { title 'WBS' }, name, start, end, effort { width 150 }, complete, chart { ${TaskTip} }
+  taskroot pr
+  hideresource 1
+  scenarios plan, execution
+}
+# A list of all employees with their contact details.
+#resourcereport ReportContactList "" {
+#  scenarios execution
+#  headline "Contact list and duty plan"
+#  columns name,
+#          email { celltext 1 "[mailto:<-email-> <-email->]" },
+#          managers { title "Manager" },
+#          chart { scale day }
+#  hideresource ~isleaf()
+#  sortresources name.up
+#  hidetask 1
+#}
+

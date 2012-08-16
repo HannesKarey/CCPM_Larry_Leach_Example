@@ -1,0 +1,126 @@
+ task pr "Project" {
+ 
+ task cc "Critical Chain" {
+ 
+    task c1 "Task C-1" {
+      allocate green
+      effort 5d
+      precedes pr.cc.a1
+    }
+ 
+    task a1 "Task A-1" {
+      allocate green
+      effort 4d
+      precedes pr.cc.b3
+    }
+  
+    task b3 "Task B-3" {
+      allocate black
+      effort 8d
+      precedes pr.a5, pr.cc.c5
+    }
+    
+    task c5 "Task C-5" {
+      allocate blue
+      effort 6d
+      precedes pr.cc.e5
+    }
+    
+    task e5 "Task E-5" {
+      allocate blue
+      effort 28d
+      precedes pr.cc.d7, pr.f5
+    }
+    
+    task d7 "Task D-7" {
+      allocate black
+      effort 9d
+      precedes pr.cc.d9
+    }
+    
+    task d9 "Task D-9" {
+      allocate red
+      effort 6d
+      precedes pr.cc.f9
+    }
+    
+    task f9 "Task F-9" {
+      allocate red
+      effort 10d
+      precedes pr.cc.a9
+    }
+    
+    task a9 "Task A-9" {
+      allocate red
+      effort 18d
+      precedes pr.pb
+    }
+  
+ }
+
+task pb "Project-Buffer" {
+  allocate apb
+  effort 52d
+  precedes pr.pe
+}
+
+task pe "Project End" {
+  end 2012-11-15
+}
+    
+task fc1 "Feeding-Chain1" {
+
+  task e3 "Task E-3" {
+    allocate magenta
+    effort 10d
+    precedes pr.fb1
+  }
+
+}
+
+task fb1 "Feeding-Buffer 1" {
+  allocate afb1
+  effort 5d
+  precedes pr.cc.e5
+}
+
+
+    task a5 "Task A-5" {
+      allocate green
+      effort 15d
+      precedes pr.a6
+    }
+  
+    task a6 "Task A-6" {
+      allocate red
+      effort 15d
+      precedes pr.a7
+    }
+  
+    task a7 "Task A-7" {
+      allocate magenta
+      effort 20d
+      precedes pr.cc.a9
+      #merges into cc
+    }
+  
+    task f3 "Task F-3" {
+      allocate magenta
+      effort 20d
+      precedes pr.f5
+    }
+    
+    task f5 "Task F-5" {
+      allocate blue
+      effort 14d
+      precedes pr.f7
+    }
+    
+    task f7 "Task F-7" {
+      allocate magenta
+      effort 7d
+      precedes pr.cc.f9
+      #merges into cc
+    }
+    
+ }  

@@ -1,0 +1,45 @@
+resource red "Red" {
+  email "klaus.mueller@project.de"
+  Phone ""
+}
+
+resource green "Green" {
+  email "klaus.mueller@project.de"
+}
+
+resource magenta "Magenta" {
+  email "klaus.mueller@project.de"
+}
+
+resource blue "Blue" {
+  email "klaus.mueller@project.de"
+}
+
+resource yello "yello" {
+  email "klaus.mueller@project.de"
+}
+
+resource black "Black" {
+  email "klaus.mueller@project.de"
+}
+
+resource apb "Project Buffer" {
+  email "klaus.mueller@project.de"
+}
+
+resource afb1 "Feeding Buffer1" {
+  email "klaus.mueller@project.de"
+}
+
+resource afb2 "Feeding Buffer2" {
+  email "klaus.mueller@project.de"
+}
+
+resource afb3 "Feeding Buffer3" {
+  email "klaus.mueller@project.de"
+}
+
+resource afb4 "Feeding Buffer4" {
+  email "klaus.mueller@project.de"
+}
+

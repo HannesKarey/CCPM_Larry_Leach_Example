@@ -1,0 +1,286 @@
+task pr "Project" {
+
+  task cc "Critical-Chain" {
+    task c1 "Task C-1" {
+       allocate green
+       start 2012-06-18
+
+       effort 5d
+       execution:effort 10d
+       complete 100
+    }
+ 
+    task a1 "Task A-1" {
+      allocate green
+      depends pr.cc.c1
+
+      effort 4d
+      execution:effort 8d
+  
+      complete 100
+
+      journalentry 2012-04-03 "Problems with the SQL Libary" {
+      author apb
+      alert red
+      summary -8<-
+        We ran into some compatibility problems with the SQL
+        Library.
+      ->8-
+      details -8<-
+        We have already contacted the vendor and are now waiting for
+        their advise.
+        ->8-
+      }
+  
+    }
+  
+    task b3 "Task B-3" {
+      allocate black
+      depends pr.cc.a1
+
+      effort 8d
+      execution:effort 16d
+
+      complete 100
+    }
+    
+    task c5 "Task C-5" {
+      allocate blue
+      depends  pr.cc.b3
+
+      complete 0
+      effort 6d
+      execution:effort 6d
+    }
+  
+    task e5 "Task E-5" {
+      allocate blue
+      depends pr.cc.c5, pr.fc1.buffer, pr.fc2.f5
+
+      complete 0
+      effort 28d
+      execution:effort 28d
+    }
+    
+    task d7 "Task D-7" {
+      allocate black
+      depends pr.cc.e5
+
+      complete 0
+      effort 9d
+      execution:effort 9d
+    }
+    
+    task d9 "Task D-9" {
+      allocate red
+      depends pr.cc.d7
+      
+      complete 0
+      effort 6d
+      execution:effort 6d
+    }
+   
+    task f9 "Task F-9" {
+      allocate red
+      depends pr.cc.d9, pr.fc2.buffer
+
+      complete 0
+      effort 10d
+      execution:effort 10d
+    }  
+    
+    task a9 "Task A-9" {
+      allocate red
+      depends pr.cc.f9, pr.fc3.buffer
+
+      complete 0
+      effort 18d
+      execution:effort 18d
+    }
+
+    task buffer "Project - Buffer" {
+      allocate apb
+      depends pr.cc.a9
+
+      flags buffer
+      CompRate "17/94"
+      ExhaustRate "(48 -31)/48"
+      
+      complete 0
+      effort 48d
+      execution:effort 31d
+
+      journalentry 2012-04-03 "Problems with the SQL Libary" {
+      author apb
+      alert green
+      summary -8<-
+        We ran into some compatibility problems with the SQL
+        Library.
+      ->8-
+      details -8<-
+        We have already contacted the vendor and are now waiting for
+        their advise.
+        ->8-
+      }
+  
+    }
+
+  }
+
+  task fc1 "Feeding-Chain 1" {
+
+    task e3 "Task E-3" {
+      allocate magenta
+      depends pr.fc2.f3
+
+      complete 100
+      effort 10d
+      execution:effort 10d
+    }
+    
+    task buffer "Buffer 1" {
+      flags buffer
+      CompRate "10.45"
+      ExhaustRate "20.4"
+      
+      allocate afb1
+      depends pr.fc1.e3
+
+      complete 100
+      effort 15d
+      execution:effort 15d
+      
+      journalentry 2012-04-03 "Problems with the SQL Libary" {
+        author apb
+        alert yellow
+        summary -8<-
+          We ran into some compatibility problems with the SQL
+          Library.
+        ->8-
+        details -8<-
+          We have already contacted the vendor and are now waiting for
+          their advise.
+        ->8-
+      }
+  
+      
+    }
+  }
+
+  task fc2 "Feeding-Chain2" {
+    task f3 "Task F-3" {
+      start 2012-06-15
+      
+      allocate magenta
+
+      complete 0
+      effort 20d
+      execution:effort 20d
+    } 
+    
+    task f5 "Task F-5" {
+      allocate blue
+      depends pr.fc2.f3
+
+      complete 0
+      effort 14d
+      execution:effort 14d
+    }
+    
+    task f7 "Task F-7" {
+      allocate magenta
+      depends pr.fc2.f5
+
+      complete 0
+      effort 7d
+      execution:effort 7d
+    }
+
+    task buffer "Buffer 2" {
+      flags buffer
+      CompRate "10.45"
+      ExhaustRate "20.4"
+      
+      allocate afb2
+      depends pr.fc2.f7
+
+      complete 0
+      effort 21d
+      execution:effort 21d
+      
+      journalentry 2012-04-03 "Problems with the SQL Libary" {
+      author apb
+      alert red
+      summary -8<-
+        We ran into some compatibility problems with the SQL
+        Library.
+      ->8-
+      details -8<-
+        We have already contacted the vendor and are now waiting for
+        their advise.
+        ->8-
+      }
+  
+
+    }
+  }
+
+  task fc3 "Feeding-Chain 3" {
+
+    task a5 "Task A-5" {
+      allocate green
+      depends pr.cc.b3 
+
+      complete 0
+      effort 15d
+      execution:effort 15d
+    }
+  
+    task a6 "Task A-6" {
+      allocate red
+      depends pr.fc3.a5
+      
+      complete 0
+      effort 15d
+      execution:effort 15d
+    }
+  
+    task a7 "Task A-7" {
+      allocate magenta
+      depends pr.fc3.a6
+
+      complete 0
+      effort 20d
+      execution:effort 20d
+    }
+    
+    task buffer "Buffer 3" {
+      flags buffer
+      CompRate "10.45"
+      ExhaustRate "20.4"
+      
+      allocate afb3
+      depends pr.fc3.a7
+
+      complete 0
+      effort 35d
+      execution:effort 35d
+      
+      journalentry 2012-04-03 "Problems with the SQL Libary" {
+      author apb
+      alert green
+      summary -8<-
+        We ran into some compatibility problems with the SQL
+        Library.
+      ->8-
+      details -8<-
+        We have already contacted the vendor and are now waiting for
+        their advise.
+        ->8-
+      }
+  
+
+    }
+     
+  }
+} 

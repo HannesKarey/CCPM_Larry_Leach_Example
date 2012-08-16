@@ -1,0 +1,39 @@
+project CriticalChainProject "Critical Chain Project"  2012-04-01 +391d {
+  
+  timezone "Europe/Berlin"
+  timeformat "%Y-%m-%d"
+
+  now 2012-04-02
+  
+  # We want to compare the baseline scenario to one with a slightly
+  # delayed start.
+  scenario plan "Plan" {
+    scenario execution "Execution"
+  }
+  
+  extend resource {
+    text Phone "Phone"
+  }
+
+  extend task {
+    text CompRate "Completion Rate" 
+    text ExhaustRate "Exhaustion Rate"    
+  }
+
+}
+
+flags chaindetail, buffer
+
+
+include "CriticalChainResources.tji"
+
+#include "tasks00-Classic.tji"
+#include "tasks01-LateStart.tji"
+#include "tasks02-HalfEstimatesBuffer.tji"
+#include "tasks03-CriticalChain.tji"
+#include "tasks04-CriticalChainFC1.tji"
+#include "tasks05-CriticalChainFC1FC2.tji"
+#include "tasks06-CriticalChainFC1FC2FC3.tji"
+include "tasks07-CriticalChainFC1FC2FC3ExecutionTracking.tji"
+
+include "CriticalChainReports.tji"

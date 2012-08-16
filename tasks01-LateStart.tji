@@ -1,0 +1,105 @@
+ task pr "Project" {
+
+    task a1 "Task A-1" {
+      allocate green
+      effort 8d
+      precedes pr.b3
+    }
+  
+    task a5 "Task A-5" {
+      allocate green
+      effort 30d
+      precedes pr.a6
+    }
+  
+    task a6 "Task A-6" {
+      allocate red
+      effort 30d
+      precedes pr.a7
+    }
+  
+    task a7 "Task A-7" {
+      allocate magenta
+      effort 40d
+      precedes pr.a9
+    }
+  
+    task a9 "Task A-9" {
+      allocate red
+      effort 36d
+      precedes pr.pe
+    }
+  
+    task pe "Project End" {
+      allocate apb
+      effort 1d
+      end 2013-01-30
+    }
+    
+    task b3 "Task B-3" {
+      allocate black
+      effort 16d
+      precedes pr.a5, pr.c5
+    }
+    
+    task c1 "Task C-1" {
+      allocate green
+      effort 10d
+      precedes pr.b3
+    }
+    
+    task c5 "Task C-5" {
+      allocate blue
+      effort 12d
+      precedes pr.d7
+    }
+    
+    task d7 "Task D-7" {
+      allocate black
+      effort 18d
+      precedes pr.d9
+    }
+    
+    task d9 "Task D-9" {
+      allocate red
+      effort 12d
+      precedes pr.pe
+    }
+    
+    task e3 "Task E-3" {
+      allocate magenta
+      effort 20d
+      precedes pr.e5
+    }
+    
+    task e5 "Task E-5" {
+      allocate blue
+      effort 56d
+      precedes pr.d7
+    }
+    
+    task f3 "Task F-3" {
+      allocate magenta
+      effort 40d
+      precedes pr.f5
+    }
+    
+    task f5 "Task F-5" {
+      allocate blue
+      effort 28d
+      precedes pr.f7
+    }
+    
+    task f7 "Task F-7" {
+      allocate magenta
+      effort 14d
+      precedes pr.f9
+    }
+    
+    task f9 "Task F-9" {
+      allocate red
+      effort 20d
+      precedes pr.pe
+    }
+    
+ }  
